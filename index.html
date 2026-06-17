@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sub4Unlock - Premium Traffic Generator</title>
+<style>
+  .s4u-wrapper { width: 100%; padding: 15px 0; display: flex; justify-content: center; font-family: sans-serif; }
+  .s4u-box { background: #ffffff; max-width: 550px; width: 100%; padding: 35px 25px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); text-align: center; box-sizing: border-box; border: 1px solid #f0f0f0; }
+  .s4u-title { font-size: 32px; font-weight: 800; color: #1e293b; margin: 0 0 8px 0; }
+  .s4u-title span { color: #eb4d4b; }
+  .s4u-subtitle { color: #64748b; font-size: 14px; margin-bottom: 30px; }
+  .pill-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 30px; }
+  .pill-btn { padding: 10px 18px; border-radius: 30px; border: none; background: #243bf6; color: white !important; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .pill-btn.active { background: #f34848 !important; }
+  .s4u-group { margin-bottom: 20px; text-align: left; }
+  .s4u-group input { width: 100%; padding: 16px 22px; border: 1.5px solid #e2e8f0; border-radius: 30px; font-size: 14px; box-sizing: border-box; outline: none; }
+  .s4u-action-btn { width: 100%; padding: 16px; background: #1200ff; color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .s4u-output { margin-top: 25px; padding: 20px; background: #f0fdf4; border: 2px dashed #23d160; border-radius: 16px; display: none; }
+  .s4u-output input { width: 100%; padding: 12px; text-align: center; border: 1px solid #bbf7d0; background: #fff; border-radius: 30px; margin-bottom: 12px; }
+  .s4u-copy { background: #23d160; color: white; padding: 10px 30px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
+  .lock-target-btn { display: block; width: 100%; padding: 16px; color: white !important; text-decoration: none; font-weight: 700; border-radius: 30px; margin-bottom: 15px; box-sizing: border-box; }
+  .lock-btn-gray { background: #94a3b8; cursor: not-allowed; border: none; width: 100%; padding: 16px; color: white; font-weight: 700; border-radius: 30px; }
+  .lock-btn-gray.ready { background: #20bf6b; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="s4u-wrapper">
+  <div class="s4u-box" id="boxGenerator">
+    <div class="s4u-title">Create Your <span>Link</span></div>
+    <div class="s4u-subtitle">Select a platform action below to lock your URL</div>
+    <div class="pill-container">
+      <button class="pill-btn active" onclick="setPlatform('yt_sub', this)">❤️ Subscribe</button>
+      <button class="pill-btn" onclick="setPlatform('yt_sub2', this)">➕ 2nd Subscribe</button>
+      <button class="pill-btn" onclick="setPlatform('yt_like_sub', this)">➕ Like & Subscribe</button>
+      <button class="pill-btn" onclick="setPlatform('yt_bell', this)">🔔 Sub & Hit Bell</button>
+      <button class="pill-btn" onclick="setPlatform('yt_like_com', this)">💬 Like & Comment</button>
+      <button class="pill-btn" onclick="setPlatform('yt_like', this)">👍 Like Video</button>
+      <button class="pill-btn" onclick="setPlatform('ig_follow', this)">📸 Follow Instagram</button>
+      <button class="pill-btn" onclick="setPlatform('fb_follow', this)">👥 Follow Facebook</button>
+      <button class="pill-btn" onclick="setPlatform('tg_join', this)">✈️ Join Telegram</button>
+    </div>
+    <div class="s4u-group"><input type="url" id="inputSocial" placeholder="Enter Your Youtube URL for Subscribe"></div>
+    <div class="s4u-group"><input type="url" id="inputDest" placeholder="Enter Destination or File URL Link"></div>
+    <button class="s4u-action-btn" onclick="buildTheLink()">GENERATE!</button>
+    <div class="s4u-output" id="boxOutput">
+      <input type="text" id="resultLink" readonly><br>
+      <button class="s4u-copy" onclick="copyResult()">Copy Link</button>
+    </div>
+  </div>
+  <div class="s4u-box" id="boxLocker" style="display: none;">
+    <div class="s4u-title">Link <span>Locked!</span></div>
+    <div class="s4u-subtitle">Complete the step below to access your destination link.</div>
+    <a href="#" id="lockActionLink" target="_blank" class="lock-target-btn" onclick="startUnlockCounter()">1. Perform Social Action</a>
+    <button id="lockUnlockBtn" class="lock-btn-gray" disabled onclick="redirectToDestination()">2. Get Unlocked Link</button>
+  </div>
+</div>
+<script>
+  let currentPlatform = 'yt_sub';
+  function setPlatform(type, btn) {
+    currentPlatform = type;
+    document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const inp = document.getElementById('inputSocial');
+    if(type === 'yt_sub') inp.placeholder = "Enter Your Youtube URL for Subscribe";
+    if(type === 'yt_sub2') inp.placeholder = "Enter Your Second Youtube Channel URL";
+    if(type === 'yt_like_sub') inp.placeholder = "Enter Youtube Video URL to Like & Subscribe";
+    if(type === 'yt_bell') inp.placeholder = "Enter Youtube Channel URL to Sub & Hit Bell";
+    if(type === 'yt_like_com') inp.placeholder = "Enter Youtube Video URL to Like & Comment";
+    if(type === 'yt_like') inp.placeholder = "Enter Youtube Video URL to Like";
+    if(type === 'ig_follow') inp.placeholder = "Enter Instagram Profile URL";
+    if(type === 'fb_follow') inp.placeholder = "Enter Facebook Page/Profile URL";
+    if(type === 'tg_join') inp.placeholder = "Enter Telegram Channel/Group Link";
+  }
+  function buildTheLink() {
+    const s = document.getElementById('inputSocial').value.trim();
+    const d = document.getElementById('inputDest').value.trim();
+    if(!s || !d) { alert("Please fill fields!"); return; }
+    const arr = [currentPlatform, s, d];
+    const enc = btoa(encodeURIComponent(JSON.stringify(arr)));
+    const base = window.location.href.split('#')[0].split('?')[0];
+    document.getElementById('resultLink').value = base + "#" + enc;
+    document.getElementById('boxOutput').style.display = 'block';
+  }
+  function copyResult() { const c = document.getElementById('resultLink'); c.select(); document.execCommand("copy"); alert("Copied!"); }
+  let finalDestination = "";
+  function checkUrlHash() {
+    const h = window.location.hash.substring(1);
+    if(h && h.length > 5) {
+      document.getElementById('boxGenerator').style.display = 'none';
+      document.getElementById('boxLocker').style.display = 'block';
+      try {
+        const data = JSON.parse(decodeURIComponent(atob(h)));
+        const type = data[0]; const url = data[1]; finalDestination = data[2];
+        const btn = document.getElementById('lockActionLink');
+        if(type==='yt_sub'||type==='yt_sub2') { btn.innerHTML = "❤️ Subscribe YouTube Channel"; btn.style.background = "#f34848"; btn.href = url + (url.includes('?') ? '&' : '?') + "sub_confirmation=1"; }
+        else if(type==='yt_like_sub') { btn.innerHTML = "➕ Like Video & Subscribe"; btn.style.background = "#f34848"; btn.href = url; }
+        else if(type==='yt_bell') { btn.innerHTML = "🔔 Subscribe & Hit Bell Icon"; btn.style.background = "#f34848"; btn.href = url; }
+        else if(type==='yt_like_com') { btn.innerHTML = "💬 Like Video & Comment"; btn.style.background = "#333"; btn.href = url; }
+        else if(type==='yt_like') { btn.innerHTML = "👍 Like YouTube Video"; btn.style.background = "#243bf6"; btn.href = url; }
+        else if(type==='ig_follow') { btn.innerHTML = "📸 Follow Instagram Profile"; btn.style.background = "#e1306c"; btn.href = url; }
+        else if(type==='fb_follow') { btn.innerHTML = "👥 Follow Facebook Page"; btn.style.background = "#1877f2"; btn.href = url; }
+        else if(type==='tg_join') { btn.innerHTML = "✈️ Join Telegram Channel"; btn.style.background = "#0088cc"; btn.href = url; }
+      } catch(err) { document.getElementById('boxGenerator').style.display = 'block'; document.getElementById('boxLocker').style.display = 'none'; }
+    }
+  }
+  function startUnlockCounter() { setTimeout(function() { const b = document.getElementById('lockUnlockBtn'); b.disabled = false; b.classList.add('ready'); b.style.background="#20bf6b"; b.innerText = "2. Get Unlocked Link (Ready)"; }, 4000); }
+  function redirectToDestination() { if(finalDestination) { window.location.href = finalDestination; } }
+  window.addEventListener('DOMContentLoaded', checkUrlHash);
+  window.addEventListener('hashchange', checkUrlHash);
+</script>
+</body>
+</html>
